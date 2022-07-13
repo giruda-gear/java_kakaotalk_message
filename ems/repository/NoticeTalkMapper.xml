@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.aaihc.mhp.biz.ems.repository.NoticeTalkMapper">
+
+    <!-- 알림톡 목록 ResultMap -->
+    <resultMap id="noticeTalkResultMap" type="NoticeTalk">
+        <id property="sn" column="sn" />
+        <result property="senderKey" column="sender_key" />
+        <result property="channel" column="channel" />
+        <result property="sndType" column="snd_type" />
+        <result property="phoneNum" column="phone_num" />
+        <result property="tmplCd" column="tmpl_cd" />
+        <result property="subject" column="subject" />
+        <result property="sndMsg" column="snd_msg" />
+        <result property="smsSndMsg" column="sms_snd_msg" />
+        <result property="smsSndNum" column="sms_snd_num" />
+        <result property="reqDeptCd" column="req_dept_cd" />
+        <result property="reqUsrId" column="req_usr_id" />
+        <result property="reqDtm" column="req_dtm" />
+        <result property="sndDtm" column="snd_dtm" />
+        <result property="rsltCd" column="rslt_cd" />
+        <result property="rcptMsg" column="rcpt_msg" />
+        <result property="rcptDtm" column="rcpt_dtm" />
+        <result property="smsSndDtm" column="sms_snd_dtm" />
+        <result property="smsRsltCd" column="sms_rslt_cd" />
+        <result property="smsRcptMsg" column="sms_rcpt_msg" />
+        <result property="smsRcptDtm" column="sms_rcpt_dtm" />
+        <result property="smsGb" column="sms_gb" />
+        <result property="smsSndYn" column="sms_snd_yn" />
+        <result property="tranSn" column="tran_sn" />
+        <result property="tranSts" column="tran_sts" />
+        <result property="agentId" column="agent_id" />
+        <result property="slot1" column="slot1" />
+        <result property="slot2" column="slot2" />
+        <result property="trTypeCd" column="tr_type_cd" />
+        <result property="attachment" column="attachment" />
+        <result property="title" column="title" />
+        <result property="supplement" column="supplement" />
+        <result property="appUserId" column="app_user_id" />
+    </resultMap>
+
+    <!-- 알림톡 목록 컬럼들 정의-->
+    <sql id="cols">
+		sn,
+		sender_key,
+		channel,
+		snd_type,
+		phone_num,
+		tmpl_cd,
+		subject,
+		snd_msg,
+		sms_snd_msg,
+		sms_snd_num,
+		req_dept_cd,
+		req_usr_id,
+		req_dtm,
+		snd_dtm,
+		rslt_cd,
+		rcpt_msg,
+		rcpt_dtm,
+		sms_snd_dtm,
+		sms_rslt_cd,
+		sms_rcpt_msg,
+		sms_rcpt_dtm,
+		sms_gb,
+		sms_snd_yn,
+		tran_sn,
+		tran_sts,
+		agent_id,
+		slot1,
+		slot2,
+		tr_type_cd,
+		attachment,
+		title,
+		supplement,
+		app_user_id
+    </sql>
+
+    <!-- 검색조건 정의 -->
+    <sql id="schCond">
+        <if test='schTxt != null and schTxt != ""'>
+            <if test="schFld == 'whle'">
+            </if>
+            <if test='schFld == "ttl"'>
+            </if>
+            <if test='schFld == "cont"'>
+            </if>
+        </if>
+    </sql>
+
+    <!-- 정렬조건 정의 -->
+    <sql id="sortCond">
+        <if test='sortFld != null and sortFld != ""'>
+            <if test='sortMetd == "ASC"'>
+                ASC
+            </if>
+            <if test='sortMetd == "DESC"'>
+                DESC
+            </if>
+        </if>
+    </sql>
+
+    <!-- 알림톡을 등록-->
+    <insert id="insert" parameterType="NoticeTalk" useGeneratedKeys="true" keyProperty="sn">
+        <selectKey keyProperty="sn" resultType="string" order="BEFORE">
+            SELECT NEXTVAL('SEQ_MZSENDTRAN')
+        </selectKey>
+
+        INSERT INTO MZSENDTRAN (
+            <include refid="cols" />
+        ) VALUES (
+            #{sn, jdbcType=VARCHAR},
+            #{senderKey, jdbcType=VARCHAR},
+            #{channel, jdbcType=VARCHAR},
+            #{sndType, jdbcType=VARCHAR},
+            #{phoneNum, jdbcType=VARCHAR},
+            #{tmplCd, jdbcType=VARCHAR},
+            #{subject, jdbcType=VARCHAR},
+            #{sndMsg, jdbcType=VARCHAR},
+            #{smsSndMsg, jdbcType=VARCHAR},
+            #{smsSndNum, jdbcType=VARCHAR},
+            COALESCE(#{reqDeptCd, jdbcType=VARCHAR}, 'admin'),
+            COALESCE(#{reqUsrId, jdbcType=VARCHAR}, 'admin'),
+            TO_CHAR(NOW(), 'YYYYMMDDHH24MISS'),
+            #{sndDtm, jdbcType=VARCHAR},
+            #{rsltCd, jdbcType=VARCHAR},
+            #{rcptMsg, jdbcType=VARCHAR},
+            #{rcptDtm, jdbcType=VARCHAR},
+            #{smsSndDtm, jdbcType=VARCHAR},
+            #{smsRsltCd, jdbcType=VARCHAR},
+            #{smsRcptMsg, jdbcType=VARCHAR},
+            #{smsRcptDtm, jdbcType=VARCHAR},
+            #{smsGb, jdbcType=VARCHAR},
+            COALESCE(#{smsSndYn, jdbcType=VARCHAR}, 'Y'),
+            #{tranSn, jdbcType=NUMERIC},
+            COALESCE(#{tranSts, jdbcType=VARCHAR}, '1'),
+            #{agentId, jdbcType=VARCHAR},
+            #{slot1, jdbcType=VARCHAR},
+            #{slot2, jdbcType=VARCHAR},
+            COALESCE(#{trTypeCd, jdbcType=VARCHAR}, 'B'),
+            #{attachment, jdbcType=VARCHAR},
+            #{title, jdbcType=VARCHAR},
+            #{supplement, jdbcType=VARCHAR},
+            #{appUserId, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <!-- 지정된 알림톡 조회 -->
+    <select id="select" parameterType="int" resultMap="noticeTalkResultMap">
+        SELECT
+            <include refid="cols" />
+        FROM MZSENDTRAN
+        WHERE sn= #{sn}
+    </select>
+
+    <!-- 전체 알림톡 수를 조회 -->
+    <select id="selectTotalCnt" parameterType="Search" resultType="int">
+        SELECT COUNT(sn) FROM MZSENDTRAN
+        <where>
+            <include refid="schCond" />
+        </where>
+    </select>
+
+    <!-- 알림톡 목록을 조회 -->
+    <select id="selectList" parameterType="Search" resultMap="noticeTalkResultMap">
+        <if test='strtRow != null'>
+        SELECT *
+        FROM (
+        </if>
+            SELECT
+                ROW_NUMBER() OVER (<include refid="sortCond" />) AS rnum
+                , <include refid="cols" />
+            FROM MZSENDTRAN
+            <where>
+                <include refid="schCond" />
+            </where>
+        <if test='strtRow != null'>
+        ) T1
+        <![CDATA[
+        WHERE rnum > #{strtRow}
+        AND rnum <= #{endRow}
+        ]]>
+        </if>
+    </select>
+
+</mapper>
